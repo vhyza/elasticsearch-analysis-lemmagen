@@ -1,0 +1,32 @@
+{
+    "index": {
+        "analysis": {
+            "filter": {
+                "lemmagen_default_filter": {
+                    "type": "lemmagen"
+                },
+                "lemmagen_cs_filter" : {
+                    "type": "lemmagen",
+                    "lexicon": "mlteast-cs"
+                },
+                "lemmagen_fr_filter" : {
+                    "type": "lemmagen",
+                    "lexicon": "fr"
+                },
+                "lemmagen_cs_path_filter" : {
+                    "type": "lemmagen",
+                    "lexicon_path": "src/test/resources/org/elasticsearch/index/analysis/cs.lem"
+                }
+            },
+            "analyzer": {
+                "lemmagen": {
+                    "type": "custom",
+                    "tokenizer": "uax_url_email",
+                    "filter": [
+                        "lemmagen_default_filter"
+                    ]
+                }
+            }
+        }
+    }
+}
