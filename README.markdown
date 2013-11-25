@@ -161,7 +161,43 @@ curl -X GET 'http://localhost:9200/lemmagen-test/_search?pretty' -d '{
 #  }
 #}
 ```
-Tested on elasticsearch version `0.90.7`.
+
+**NOTE**: `lemmagen` token filter doesn't lowercase. If you wan't your tokens to be lowercased, add [lowercase token filter](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/analysis-lowercase-tokenfilter.html) into your analyzer `filters`.
+
+```bash
+# Create index with lemmagen and lowercase filter
+#
+curl -X POST 'http://localhost:9200/lemmagen-lowercase-test' -d '{
+  "settings": {
+    "index": {
+      "analysis": {
+        "filter": {
+          "lemmagen_filter_en": {
+            "type": "lemmagen",
+            "lexicon": "en"
+          }
+        },
+        "analyzer": {
+          "lemmagen_lowercase_en": {
+            "type": "custom",
+            "tokenizer": "uax_url_email",
+            "filter": [ "lemmagen_filter_en", "lowercase" ]
+          }
+        }
+      }
+    }
+  },
+  "mappings" : {
+    "message" : {
+      "properties" : {
+        "text" : { "type" : "string", "analyzer" : "lemmagen_lowercase_en" }
+      }
+    }
+  }
+}'
+```
+
+Plugin is tested on elasticsearch version `0.90.7`.
 
 Credits
 =======
