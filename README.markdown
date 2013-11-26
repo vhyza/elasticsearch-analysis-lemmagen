@@ -28,7 +28,7 @@ Instalation
 To install the plugin, run:
 
 ```bash
-bin/plugin --url https://github.com/vhyza/elasticsearch-analysis-lemmagen/releases/download/v0.1/elasticsearch-analysis-lemmagen-0.1-plugin.zip --install elasticsearch-analysis-lemmagen
+bin/plugin --url http://bit.ly/analysis-lemmagen --install elasticsearch-analysis-lemmagen
 ```
 
 
