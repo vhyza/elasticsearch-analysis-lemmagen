@@ -22,6 +22,11 @@ The LemmaGen Analysis plugin provides [jLemmaGen lemmatizer](https://bitbucket.o
 * Serbian (sr)
 * Ukrainian (uk)
 
+Lexicons license
+================
+According to communication with author of jLemmagen implementation ([https://groups.google.com/forum/#!searchin/elasticsearch/lemmagen/elasticsearch/kA4LoPEHL6A/vGWFdK9QMboJ](https://groups.google.com/forum/#!searchin/elasticsearch/lemmagen/elasticsearch/kA4LoPEHL6A/vGWFdK9QMboJ)) it seems lexicons can be used for non-commercial research purposes only.
+
+
 Instalation
 ===========
 
@@ -208,6 +213,9 @@ Credits
 
 License
 =======
+All source codes except prebuilt lexicon files are licensed under Apache License, Version 2.0.
+Prebuilt lexicons can be used for non-commercial research purposes only.
+
     Copyright 2013 Vojtěch Hýža <http://vhyza.eu>
 
     Licensed under the Apache License, Version 2.0 (the "License");
