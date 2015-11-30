@@ -1,5 +1,8 @@
 {
     "index": {
+        "version": {
+            "created": "1040499"
+        },
         "analysis": {
             "filter": {
                 "lemmagen_default_filter": {
@@ -15,7 +18,7 @@
                 },
                 "lemmagen_cs_path_filter" : {
                     "type": "lemmagen",
-                    "lexicon_path": "src/test/resources/org/elasticsearch/index/analysis/cs.lem"
+                    "lexicon_path": "../src/test/resources/org/elasticsearch/index/analysis/cs.lem"
                 }
             },
             "analyzer": {

@@ -1,11 +1,10 @@
 package org.elasticsearch.plugin.analysis.lemmagen;
 
-import org.elasticsearch.common.inject.Module;
 import org.elasticsearch.index.analysis.AnalysisModule;
-import org.elasticsearch.plugins.AbstractPlugin;
 import org.elasticsearch.index.analysis.LemmagenAnalysisBinderProcessor;
+import org.elasticsearch.plugins.Plugin;
 
-public class AnalysisLemmagenPlugin extends AbstractPlugin {
+public class AnalysisLemmagenPlugin extends Plugin {
 
     @Override public String name() {
         return "analysis-lemmagen";
@@ -15,10 +14,7 @@ public class AnalysisLemmagenPlugin extends AbstractPlugin {
         return "Lemmagen analysis support";
     }
 
-    @Override public void processModule(Module module) {
-        if (module instanceof AnalysisModule) {
-            AnalysisModule analysisModule = (AnalysisModule) module;
-            analysisModule.addProcessor(new LemmagenAnalysisBinderProcessor());
-        }
+    public void onModule(AnalysisModule module) {
+            module.addProcessor(new LemmagenAnalysisBinderProcessor());
     }
 }
