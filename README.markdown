@@ -14,6 +14,7 @@ The LemmaGen Analysis plugin provides [jLemmaGen lemmatizer](https://bitbucket.o
 * French (fr)
 * Hungarian (hu)
 * Macedonian (mk)
+* Persian (fa) - version 2.1 only
 * Polish (pl)
 * Romanian (ro)
 * Russian (ru)
@@ -32,18 +33,31 @@ Instalation
 
 To install the plugin, run:
 
+* elasticsearch `0.90.x`
+
 ```bash
-bin/plugin --url http://bit.ly/analysis-lemmagen --install elasticsearch-analysis-lemmagen
+./bin/plugin --url https://github.com/vhyza/elasticsearch-analysis-lemmagen/releases/download/v0.1/elasticsearch-analysis-lemmagen-0.1-plugin.zip --install elasticsearch-analysis-lemmagen
+```
+* elasticsearch `2.1.x`
+
+```bash
+./bin/plugin install https://github.com/vhyza/elasticsearch-analysis-lemmagen/releases/download/v2.1.0.1/elasticsearch-analysis-lemmagen-2.1.0.1-plugin.zip
 ```
 
+**Restart Elasticsearch**, and you should see in logs ...
 
-**Restart Elasticsearch**, and you should see ...
+* elasticsearch `0.90.x`
 
 ```bash
 [2013-11-25 00:33:01,146][INFO ][plugins] [Forrester, Lee] loaded [analysis-lemmagen], sites []
 ```
 
-in logs.
+* elasticsearch `2.1.x`
+
+```bash
+[2015-12-01 19:09:12,809][INFO ][plugins] [Aralune] loaded [elasticsearch-analysis-lemmagen], sites []
+```
+
 
 Usage
 =====
@@ -57,7 +71,7 @@ Example
 #
 curl -X DELETE 'http://localhost:9200/lemmagen-test'
 
-# Create index with lemmagen filter 
+# Create index with lemmagen filter
 #
 curl -X POST 'http://localhost:9200/lemmagen-test' -d '{
   "settings": {
@@ -95,7 +109,7 @@ curl -X POST 'http://localhost:9200/lemmagen-test' -d '{
 curl -X GET 'http://localhost:9200/lemmagen-test/_analyze?analyzer=lemmagen_en&pretty' -d 'I am late.'
 
 # RESPONSE:
-# 
+#
 # {
 #   "tokens" : [ {
 #     "token" : "i",
