@@ -65,7 +65,7 @@ public class LemmagenFilterFactory extends AbstractTokenFilterFactory {
 
     public Lemmatizer getLemmatizer(String lexicon) {
         try {
-            return LemmatizerFactory.getPrebuild(lexicon);
+            return LemmatizerFactory.getPrebuilt(lexicon);
         } catch (Exception e) {
             throw new IllegalArgumentException("Can't initialize lemmatizer from resource " + lexicon, e);
         }
