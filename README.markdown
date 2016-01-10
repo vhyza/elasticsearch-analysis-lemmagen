@@ -14,7 +14,7 @@ The LemmaGen Analysis plugin provides [jLemmaGen lemmatizer](https://bitbucket.o
 * French (fr)
 * Hungarian (hu)
 * Macedonian (mk)
-* Persian (fa) - version 2.1 only
+* Persian (fa) - since version 2.1
 * Polish (pl)
 * Romanian (ro)
 * Russian (ru)
@@ -38,10 +38,16 @@ To install the plugin, run:
 ```bash
 ./bin/plugin --url https://github.com/vhyza/elasticsearch-analysis-lemmagen/releases/download/v0.1/elasticsearch-analysis-lemmagen-0.1-plugin.zip --install elasticsearch-analysis-lemmagen
 ```
-* elasticsearch `2.1.x`
+* elasticsearch `2.1.0`
 
 ```bash
 ./bin/plugin install https://github.com/vhyza/elasticsearch-analysis-lemmagen/releases/download/v2.1.0.1/elasticsearch-analysis-lemmagen-2.1.0.1-plugin.zip
+```
+
+* elasticsearch `2.1.1`
+
+```bash
+./bin/plugin install https://github.com/vhyza/elasticsearch-analysis-lemmagen/releases/download/v2.1.1/elasticsearch-analysis-lemmagen-2.1.1-plugin.zip
 ```
 
 **Restart Elasticsearch**, and you should see in logs ...
@@ -216,7 +222,7 @@ curl -X POST 'http://localhost:9200/lemmagen-lowercase-test' -d '{
 }'
 ```
 
-Plugin is tested on elasticsearch version `0.90.7`.
+Plugin is tested on elasticsearch versions `0.90.7`, `2.1.0`, `2.1.1`.
 
 Credits
 =======
