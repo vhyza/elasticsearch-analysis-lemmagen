@@ -56,6 +56,12 @@ To install the plugin, run:
 ./bin/plugin install https://github.com/vhyza/elasticsearch-analysis-lemmagen/releases/download/v2.2.0/elasticsearch-analysis-lemmagen-2.2.0-plugin.zip
 ```
 
+* elasticsearch `2.3.0`
+
+```bash
+./bin/plugin install https://github.com/vhyza/elasticsearch-analysis-lemmagen/releases/download/v2.3.0/elasticsearch-analysis-lemmagen-2.3.0-plugin.zip
+```
+
 **Restart Elasticsearch**, and you should see in logs ...
 
 * elasticsearch `0.90.x`
