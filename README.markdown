@@ -31,50 +31,9 @@ According to communication with author of jLemmagen implementation ([https://gro
 Instalation
 ===========
 
-To install the plugin, run:
+Installation instructions for particular elasticsearch versions are located at [**releases section**](https://github.com/vhyza/elasticsearch-analysis-lemmagen/releases).
 
-* elasticsearch `0.90.x`
-
-```bash
-./bin/plugin --url https://github.com/vhyza/elasticsearch-analysis-lemmagen/releases/download/v0.1/elasticsearch-analysis-lemmagen-0.1-plugin.zip --install elasticsearch-analysis-lemmagen
-```
-* elasticsearch `2.1.0`
-
-```bash
-./bin/plugin install https://github.com/vhyza/elasticsearch-analysis-lemmagen/releases/download/v2.1.0.1/elasticsearch-analysis-lemmagen-2.1.0.1-plugin.zip
-```
-
-* elasticsearch `2.1.1`
-
-```bash
-./bin/plugin install https://github.com/vhyza/elasticsearch-analysis-lemmagen/releases/download/v2.1.1/elasticsearch-analysis-lemmagen-2.1.1-plugin.zip
-```
-
-* elasticsearch `2.2.0`
-
-```bash
-./bin/plugin install https://github.com/vhyza/elasticsearch-analysis-lemmagen/releases/download/v2.2.0/elasticsearch-analysis-lemmagen-2.2.0-plugin.zip
-```
-
-* elasticsearch `2.3.0`
-
-```bash
-./bin/plugin install https://github.com/vhyza/elasticsearch-analysis-lemmagen/releases/download/v2.3.0/elasticsearch-analysis-lemmagen-2.3.0-plugin.zip
-```
-
-* elasticsearch `2.3.1`
-
-```bash
-./bin/plugin install https://github.com/vhyza/elasticsearch-analysis-lemmagen/releases/download/v2.3.1/elasticsearch-analysis-lemmagen-2.3.1-plugin.zip
-```
-
-* elasticsearch `2.3.2`
-
-```bash
-./bin/plugin install https://github.com/vhyza/elasticsearch-analysis-lemmagen/releases/download/v2.3.2/elasticsearch-analysis-lemmagen-2.3.2-plugin.zip
-```
-
-**Restart Elasticsearch**, and you should see in logs ...
+After plugin installation and **elasticsearch restart** you should see in logs:
 
 * elasticsearch `0.90.x`
 
@@ -82,7 +41,7 @@ To install the plugin, run:
 [2013-11-25 00:33:01,146][INFO ][plugins] [Forrester, Lee] loaded [analysis-lemmagen], sites []
 ```
 
-* elasticsearch `2.1.x`
+* elasticsearch `2.x`
 
 ```bash
 [2015-12-01 19:09:12,809][INFO ][plugins] [Aralune] loaded [elasticsearch-analysis-lemmagen], sites []
