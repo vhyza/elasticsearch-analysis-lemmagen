@@ -25,7 +25,7 @@ The LemmaGen Analysis plugin provides [jLemmaGen lemmatizer](https://bitbucket.o
 
 Lexicons license
 ================
-According to communication with author of jLemmagen implementation ([https://groups.google.com/forum/#!searchin/elasticsearch/lemmagen/elasticsearch/kA4LoPEHL6A/vGWFdK9QMboJ](https://groups.google.com/forum/#!searchin/elasticsearch/lemmagen/elasticsearch/kA4LoPEHL6A/vGWFdK9QMboJ)) it seems lexicons can be used for non-commercial research purposes only.
+According to communication with author of jLemmagen implementation ([https://discuss.elastic.co/t/ann-lemmagen-analysis-for-elasticsearch-plugin/14585/13](https://discuss.elastic.co/t/ann-lemmagen-analysis-for-elasticsearch-plugin/14585/13)) it seems lexicons can be used for non-commercial research purposes only.
 
 
 Instalation
