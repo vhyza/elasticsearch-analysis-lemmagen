@@ -5,11 +5,9 @@ import eu.hlavki.text.lemmagen.api.Lemmatizer;
 import org.apache.lucene.analysis.TokenFilter;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
-import org.slf4j.LoggerFactory;
 
 public class LemmagenFilter extends TokenFilter {
 
-    private static final org.slf4j.Logger log = LoggerFactory.getLogger(LemmagenFilter.class);
     private final CharTermAttribute termAtt = addAttribute(CharTermAttribute.class);
     private Lemmatizer lemmatizer = null;
 

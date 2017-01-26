@@ -1,20 +1,18 @@
 package org.elasticsearch.plugin.analysis.lemmagen;
 
-import org.elasticsearch.index.analysis.AnalysisModule;
-import org.elasticsearch.index.analysis.LemmagenAnalysisBinderProcessor;
+import org.elasticsearch.index.analysis.LemmagenFilterFactory;
 import org.elasticsearch.plugins.Plugin;
+import org.elasticsearch.plugins.AnalysisPlugin;
+import org.elasticsearch.indices.analysis.AnalysisModule.AnalysisProvider;
+import org.elasticsearch.index.analysis.TokenFilterFactory;
 
-public class AnalysisLemmagenPlugin extends Plugin {
+import java.util.Map;
 
-    @Override public String name() {
-        return "analysis-lemmagen";
-    }
+import static java.util.Collections.singletonMap;
 
-    @Override public String description() {
-        return "Lemmagen analysis support";
-    }
-
-    public void onModule(AnalysisModule module) {
-            module.addProcessor(new LemmagenAnalysisBinderProcessor());
+public class AnalysisLemmagenPlugin extends Plugin implements AnalysisPlugin {
+    @Override
+    public Map<String, AnalysisProvider<TokenFilterFactory>> getTokenFilters() {
+        return singletonMap("lemmagen", LemmagenFilterFactory::new);
     }
 }

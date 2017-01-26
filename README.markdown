@@ -47,6 +47,11 @@ After plugin installation and **elasticsearch restart** you should see in logs:
 [2015-12-01 19:09:12,809][INFO ][plugins] [Aralune] loaded [elasticsearch-analysis-lemmagen], sites []
 ```
 
+* elasticsearch `5.x`
+
+```
+[2017-01-25T09:37:04,901][INFO ][o.e.p.PluginsService     ] [63Jivne] loaded plugin [elasticsearch-analysis-lemmagen]
+```
 
 Usage
 =====
@@ -62,7 +67,7 @@ curl -X DELETE 'http://localhost:9200/lemmagen-test'
 
 # Create index with lemmagen filter
 #
-curl -X POST 'http://localhost:9200/lemmagen-test' -d '{
+curl -X PUT 'http://localhost:9200/lemmagen-test' -d '{
   "settings": {
     "index": {
       "analysis": {
@@ -175,7 +180,7 @@ curl -X GET 'http://localhost:9200/lemmagen-test/_search?pretty' -d '{
 ```bash
 # Create index with lemmagen and lowercase filter
 #
-curl -X POST 'http://localhost:9200/lemmagen-lowercase-test' -d '{
+curl -X PUT 'http://localhost:9200/lemmagen-lowercase-test' -d '{
   "settings": {
     "index": {
       "analysis": {
@@ -205,8 +210,6 @@ curl -X POST 'http://localhost:9200/lemmagen-lowercase-test' -d '{
 }'
 ```
 
-Plugin is tested on elasticsearch versions `0.90.7`, `2.1.0`, `2.1.1`.
-
 Credits
 =======
 
@@ -219,7 +222,7 @@ License
 All source codes except prebuilt lexicon files are licensed under Apache License, Version 2.0.
 Prebuilt lexicons can be used for non-commercial research purposes only.
 
-    Copyright 2013 Vojtěch Hýža <http://vhyza.eu>
+    Copyright 2017 Vojtěch Hýža <http://vhyza.eu>
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.

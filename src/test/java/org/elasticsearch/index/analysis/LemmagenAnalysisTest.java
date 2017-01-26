@@ -1,37 +1,27 @@
 package org.elasticsearch.index.analysis;
 
-import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.BaseTokenStreamTestCase;
 import org.apache.lucene.analysis.standard.UAX29URLEmailTokenizer;
-import org.elasticsearch.Version;
-import org.elasticsearch.common.inject.Injector;
-import org.elasticsearch.common.inject.ModulesBuilder;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.settings.SettingsModule;
 import org.elasticsearch.env.Environment;
-import org.elasticsearch.env.EnvironmentModule;
-import org.elasticsearch.index.Index;
-import org.elasticsearch.index.IndexNameModule;
-import org.elasticsearch.index.settings.IndexSettingsModule;
-import org.elasticsearch.indices.analysis.IndicesAnalysisService;
+import org.elasticsearch.index.IndexSettings;
 import org.elasticsearch.plugin.analysis.lemmagen.AnalysisLemmagenPlugin;
-
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.elasticsearch.indices.analysis.AnalysisModule;
+import org.elasticsearch.test.IndexSettingsModule;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.util.Arrays;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 
+import static java.util.Collections.emptyList;
+
 public class LemmagenAnalysisTest extends BaseTokenStreamTestCase {
 
-    @Test
     public void testLemmagenFilterFactoryWithDefaultLexicon() throws IOException {
         AnalysisService analysisService = createAnalysisService();
 
@@ -47,7 +37,6 @@ public class LemmagenAnalysisTest extends BaseTokenStreamTestCase {
         assertTokenStreamContents(tokenFilter.create(tokenizer), expected);
     }
 
-    @Test
     public void testLemmagenFilterFactoryWithCustomLexicon() throws IOException {
         AnalysisService analysisService = createAnalysisService();
 
@@ -62,7 +51,6 @@ public class LemmagenAnalysisTest extends BaseTokenStreamTestCase {
         assertTokenStreamContents(tokenFilter.create(tokenizer), expected);
     }
 
-    @Test
     public void testLemmagenFilterFactoryWithShortLexiconCode() throws IOException {
         AnalysisService analysisService = createAnalysisService();
 
@@ -78,7 +66,6 @@ public class LemmagenAnalysisTest extends BaseTokenStreamTestCase {
         assertTokenStreamContents(tokenFilter.create(tokenizer), expected);
     }
 
-    @Test
     public void testLemmagenFilterFactoryWithPath() throws IOException {
         AnalysisService analysisService = createAnalysisService();
 
@@ -94,23 +81,24 @@ public class LemmagenAnalysisTest extends BaseTokenStreamTestCase {
         assertTokenStreamContents(tokenFilter.create(tokenizer), expected);
     }
 
-    public AnalysisService createAnalysisService() {
+    public AnalysisService createAnalysisService() throws IOException {
         Settings settings = Settings
-                .settingsBuilder()
-                .loadFromStream("lemmagen.json", getClass().getResourceAsStream("lemmagen.json"))
-                .put("path.home", (new File("")).getAbsolutePath())
-                .build();
+                            .builder()
+                            .loadFromStream("lemmagen.json", getClass().getResourceAsStream("lemmagen.json"))
+                            .build();
 
-        Index index = new Index("test");
+        Settings nodeSettings = Settings
+                                .builder()
+                                .put("path.home", (new File("")).getAbsolutePath())
+                                .put("path.conf", (new File("")).getAbsolutePath())
+                                .build();
 
-        Injector parentInjector = new ModulesBuilder().add(new SettingsModule(settings),
-                new EnvironmentModule(new Environment(settings))).createInjector();
-        Injector injector = new ModulesBuilder().add(
-                new IndexSettingsModule(index, settings),
-                new IndexNameModule(index),
-                new AnalysisModule(settings, parentInjector.getInstance(IndicesAnalysisService.class)).addProcessor(new LemmagenAnalysisBinderProcessor())).createChildInjector(parentInjector);
+        IndexSettings indexSettings = IndexSettingsModule.newIndexSettings("test", settings);
+        Environment env = new Environment(nodeSettings);
 
-        return injector.getInstance(AnalysisService.class);
+        AnalysisModule analysisModule = new AnalysisModule(env, Arrays.asList(new AnalysisLemmagenPlugin()));
+
+        return analysisModule.getAnalysisRegistry().build(indexSettings);
     }
 
 }

@@ -7,7 +7,7 @@
     <includeBaseDirectory>false</includeBaseDirectory>
     <dependencySets>
         <dependencySet>
-            <outputDirectory>/</outputDirectory>
+            <outputDirectory>/elasticsearch/</outputDirectory>
             <useProjectArtifact>true</useProjectArtifact>
             <useTransitiveFiltering>true</useTransitiveFiltering>
             <excludes>
@@ -15,19 +15,21 @@
             </excludes>
         </dependencySet>
         <dependencySet>
-            <outputDirectory>/</outputDirectory>
+            <outputDirectory>/elasticsearch/</outputDirectory>
             <useProjectArtifact>true</useProjectArtifact>
             <useTransitiveFiltering>true</useTransitiveFiltering>
             <includes>
                 <include>eu.hlavki.text:jlemmagen</include>
                 <include>eu.hlavki.text:jlemmagen-lang</include>
-                <include>org.slf4j:slf4j-log4j12</include>
+                <include>org.slf4j:slf4j-api</include>
+                <include>org.slf4j:slf4j-simple</include>
             </includes>
         </dependencySet>
     </dependencySets>
     <files>
         <file>
             <source>plugin-descriptor.properties</source>
+            <outputDirectory>/elasticsearch/</outputDirectory>
             <filtered>true</filtered>
         </file>
     </files>
