@@ -210,6 +210,23 @@ curl -X PUT 'http://localhost:9200/lemmagen-lowercase-test' -d '{
 }'
 ```
 
+Development
+===========
+
+To copy dependencies located in `lib` directory to you local maven repository (`~/.m2`) run:
+
+```bash
+mvn initialize
+```
+
+and to create plugin package run following:
+
+```bash
+mvn package
+```
+
+After that build should be located in `./target/releases`.
+
 Credits
 =======
 
