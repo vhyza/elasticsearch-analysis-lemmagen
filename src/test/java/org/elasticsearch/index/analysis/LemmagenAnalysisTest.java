@@ -1,31 +1,29 @@
 package org.elasticsearch.index.analysis;
 
 import org.apache.lucene.analysis.Tokenizer;
-import org.apache.lucene.analysis.BaseTokenStreamTestCase;
 import org.apache.lucene.analysis.standard.UAX29URLEmailTokenizer;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.env.Environment;
-import org.elasticsearch.index.IndexSettings;
+import org.elasticsearch.index.Index;
 import org.elasticsearch.plugin.analysis.lemmagen.AnalysisLemmagenPlugin;
-import org.elasticsearch.indices.analysis.AnalysisModule;
-import org.elasticsearch.test.IndexSettingsModule;
+import org.elasticsearch.test.ESTestCase;
+import org.elasticsearch.test.ESTokenStreamTestCase;
+
+import static org.elasticsearch.test.ESTestCase.createTestAnalysis;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.Arrays;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 
-import static java.util.Collections.emptyList;
-
-public class LemmagenAnalysisTest extends BaseTokenStreamTestCase {
+public class LemmagenAnalysisTest extends ESTokenStreamTestCase {
 
     public void testLemmagenFilterFactoryWithDefaultLexicon() throws IOException {
-        AnalysisService analysisService = createAnalysisService();
+        ESTestCase.TestAnalysis analysis = createAnalysis();
 
-        TokenFilterFactory tokenFilter = analysisService.tokenFilter("lemmagen_default_filter");
+        TokenFilterFactory tokenFilter = analysis.tokenFilter.get("lemmagen_default_filter");
         assertThat(tokenFilter, instanceOf(LemmagenFilterFactory.class));
 
         String source = "I was late.";
@@ -38,10 +36,11 @@ public class LemmagenAnalysisTest extends BaseTokenStreamTestCase {
     }
 
     public void testLemmagenFilterFactoryWithCustomLexicon() throws IOException {
-        AnalysisService analysisService = createAnalysisService();
+        ESTestCase.TestAnalysis analysis = createAnalysis();
 
-        TokenFilterFactory tokenFilter = analysisService.tokenFilter("lemmagen_cs_filter");
+        TokenFilterFactory tokenFilter = analysis.tokenFilter.get("lemmagen_cs_filter");
         assertThat(tokenFilter, instanceOf(LemmagenFilterFactory.class));
+
         String source = "Děkuji, že jsi přišel.";
         String[] expected = {"Děkovat", "že", "být", "přijít"};
 
@@ -52,9 +51,9 @@ public class LemmagenAnalysisTest extends BaseTokenStreamTestCase {
     }
 
     public void testLemmagenFilterFactoryWithShortLexiconCode() throws IOException {
-        AnalysisService analysisService = createAnalysisService();
+        ESTestCase.TestAnalysis analysis = createAnalysis();
 
-        TokenFilterFactory tokenFilter = analysisService.tokenFilter("lemmagen_fr_filter");
+        TokenFilterFactory tokenFilter = analysis.tokenFilter.get("lemmagen_fr_filter");
         assertThat(tokenFilter, instanceOf(LemmagenFilterFactory.class));
 
         String source = "Il faut encore ajouter une pincée de sel.";
@@ -67,9 +66,9 @@ public class LemmagenAnalysisTest extends BaseTokenStreamTestCase {
     }
 
     public void testLemmagenFilterFactoryWithPath() throws IOException {
-        AnalysisService analysisService = createAnalysisService();
+        ESTestCase.TestAnalysis analysis = createAnalysis();
 
-        TokenFilterFactory tokenFilter = analysisService.tokenFilter("lemmagen_cs_path_filter");
+        TokenFilterFactory tokenFilter = analysis.tokenFilter.get("lemmagen_cs_path_filter");
         assertThat(tokenFilter, instanceOf(LemmagenFilterFactory.class));
 
         String source = "Děkuji, že jsi přišel.";
@@ -81,7 +80,7 @@ public class LemmagenAnalysisTest extends BaseTokenStreamTestCase {
         assertTokenStreamContents(tokenFilter.create(tokenizer), expected);
     }
 
-    public AnalysisService createAnalysisService() throws IOException {
+    public ESTestCase.TestAnalysis createAnalysis() throws java.io.IOException {
         Settings settings = Settings
                             .builder()
                             .loadFromStream("lemmagen.json", getClass().getResourceAsStream("lemmagen.json"))
@@ -93,12 +92,11 @@ public class LemmagenAnalysisTest extends BaseTokenStreamTestCase {
                                 .put("path.conf", (new File("")).getAbsolutePath())
                                 .build();
 
-        IndexSettings indexSettings = IndexSettingsModule.newIndexSettings("test", settings);
-        Environment env = new Environment(nodeSettings);
+        Index index = new Index("test", "_na_");
 
-        AnalysisModule analysisModule = new AnalysisModule(env, Arrays.asList(new AnalysisLemmagenPlugin()));
+        ESTestCase.TestAnalysis analysis = createTestAnalysis(index, nodeSettings, settings, new AnalysisLemmagenPlugin());
 
-        return analysisModule.getAnalysisRegistry().build(indexSettings);
+        return analysis;
     }
 
 }
