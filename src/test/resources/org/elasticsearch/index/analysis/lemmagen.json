@@ -28,6 +28,14 @@
                     "filter": [
                         "lemmagen_default_filter"
                     ]
+                },
+                "lemmagen_with_keyword_repeat": {
+                    "type": "custom",
+                    "tokenizer": "uax_url_email",
+                    "filter": [
+                        "keyword_repeat",
+                        "lemmagen_default_filter"
+                    ]
                 }
             }
         }

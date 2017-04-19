@@ -81,6 +81,13 @@ public class LemmagenAnalysisTest extends ESTokenStreamTestCase {
     }
 
     public ESTestCase.TestAnalysis createAnalysis() throws java.io.IOException {
+    public void testAnalyzerWithKeywordRepeatFilter() throws IOException {
+        ESTestCase.TestAnalysis analysis = createAnalysis();
+        NamedAnalyzer analyzerWithKeywordRepeat = analysis.indexAnalyzers.get("lemmagen_with_keyword_repeat");
+
+        assertTokenStreamContents(analyzerWithKeywordRepeat.tokenStream("test", "am"), new String[]{"am", "be"});
+    }
+
         Settings settings = Settings
                             .builder()
                             .loadFromStream("lemmagen.json", getClass().getResourceAsStream("lemmagen.json"))

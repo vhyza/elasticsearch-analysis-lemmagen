@@ -5,10 +5,12 @@ import eu.hlavki.text.lemmagen.api.Lemmatizer;
 import org.apache.lucene.analysis.TokenFilter;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
+import org.apache.lucene.analysis.tokenattributes.KeywordAttribute;
 
 public class LemmagenFilter extends TokenFilter {
 
-    private final CharTermAttribute termAtt = addAttribute(CharTermAttribute.class);
+    private final CharTermAttribute termAttr   = addAttribute(CharTermAttribute.class);
+    private final KeywordAttribute keywordAttr = addAttribute(KeywordAttribute.class);
     private Lemmatizer lemmatizer = null;
 
     public LemmagenFilter(final TokenStream input, final Lemmatizer lemmatizer) {
@@ -21,9 +23,9 @@ public class LemmagenFilter extends TokenFilter {
         if (!input.incrementToken()) {
             return false;
         }
-        CharSequence lemma = lemmatizer.lemmatize(termAtt);
-        if (!equalCharSequences(lemma, termAtt)) {
-            termAtt.setEmpty().append(lemma);
+        CharSequence lemma = lemmatizer.lemmatize(termAttr);
+        if (!keywordAttr.isKeyword() && !equalCharSequences(lemma, termAttr)) {
+            termAttr.setEmpty().append(lemma);
         }
         return true;
     }
