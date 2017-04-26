@@ -80,7 +80,6 @@ public class LemmagenAnalysisTest extends ESTokenStreamTestCase {
         assertTokenStreamContents(tokenFilter.create(tokenizer), expected);
     }
 
-    public ESTestCase.TestAnalysis createAnalysis() throws java.io.IOException {
     public void testAnalyzerWithKeywordRepeatFilter() throws IOException {
         ESTestCase.TestAnalysis analysis = createAnalysis();
         NamedAnalyzer analyzerWithKeywordRepeat = analysis.indexAnalyzers.get("lemmagen_with_keyword_repeat");
@@ -88,6 +87,14 @@ public class LemmagenAnalysisTest extends ESTokenStreamTestCase {
         assertTokenStreamContents(analyzerWithKeywordRepeat.tokenStream("test", "am"), new String[]{"am", "be"});
     }
 
+    public void testAnalyzerWithKeywordMarkerFilter() throws IOException {
+        ESTestCase.TestAnalysis analysis = createAnalysis();
+        NamedAnalyzer analyzerWithKeywordMarker = analysis.indexAnalyzers.get("lemmagen_with_keyword_marker");
+
+        assertTokenStreamContents(analyzerWithKeywordMarker.tokenStream("test", "apples"), new String[]{"apples"});
+    }
+
+    public ESTestCase.TestAnalysis createAnalysis() throws IOException {
         Settings settings = Settings
                             .builder()
                             .loadFromStream("lemmagen.json", getClass().getResourceAsStream("lemmagen.json"))

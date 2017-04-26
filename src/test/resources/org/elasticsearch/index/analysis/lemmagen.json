@@ -19,6 +19,10 @@
                 "lemmagen_cs_path_filter" : {
                     "type": "lemmagen",
                     "lexicon_path": "../src/test/resources/org/elasticsearch/index/analysis/cs.lem"
+                },
+                "protected_words": {
+                    "type": "keyword_marker",
+                    "keywords": ["apples"]
                 }
             },
             "analyzer": {
@@ -34,6 +38,14 @@
                     "tokenizer": "uax_url_email",
                     "filter": [
                         "keyword_repeat",
+                        "lemmagen_default_filter"
+                    ]
+                },
+                "lemmagen_with_keyword_marker": {
+                    "type": "custom",
+                    "tokenizer": "uax_url_email",
+                    "filter": [
+                        "protected_words",
                         "lemmagen_default_filter"
                     ]
                 }
