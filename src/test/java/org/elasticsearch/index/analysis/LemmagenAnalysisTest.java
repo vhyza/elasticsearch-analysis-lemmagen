@@ -1,3 +1,6 @@
+// TODO: Bring back tests for keyword_repeat and keyword_marker after
+// https://github.com/elastic/elasticsearch/issues/27527 is resolved
+//
 package org.elasticsearch.index.analysis;
 
 import org.apache.lucene.analysis.Tokenizer;
@@ -7,12 +10,18 @@ import org.elasticsearch.index.Index;
 import org.elasticsearch.plugin.analysis.lemmagen.AnalysisLemmagenPlugin;
 import org.elasticsearch.test.ESTestCase;
 import org.elasticsearch.test.ESTokenStreamTestCase;
+import org.elasticsearch.cluster.metadata.IndexMetaData;
+import org.elasticsearch.Version;
+import org.elasticsearch.env.Environment;
 
 import static org.elasticsearch.test.ESTestCase.createTestAnalysis;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -20,97 +29,40 @@ import static org.hamcrest.Matchers.instanceOf;
 
 public class LemmagenAnalysisTest extends ESTokenStreamTestCase {
 
-    public void testLemmagenFilterFactoryWithDefaultLexicon() throws IOException {
+    public void testLemmagenTokenFilter() throws IOException {
         ESTestCase.TestAnalysis analysis = createAnalysis();
-
-        TokenFilterFactory tokenFilter = analysis.tokenFilter.get("lemmagen_default_filter");
-        assertThat(tokenFilter, instanceOf(LemmagenFilterFactory.class));
-
-        String source = "I was late.";
-        String[] expected = new String[]{"I", "be", "late"};
-
-        Tokenizer tokenizer = new UAX29URLEmailTokenizer();
-        tokenizer.setReader(new StringReader(source));
-
-        assertTokenStreamContents(tokenFilter.create(tokenizer), expected);
-    }
-
-    public void testLemmagenFilterFactoryWithCustomLexicon() throws IOException {
-        ESTestCase.TestAnalysis analysis = createAnalysis();
-
-        TokenFilterFactory tokenFilter = analysis.tokenFilter.get("lemmagen_cs_filter");
-        assertThat(tokenFilter, instanceOf(LemmagenFilterFactory.class));
 
         String source = "Děkuji, že jsi přišel.";
         String[] expected = {"Děkovat", "že", "být", "přijít"};
+        String[] filters = {"lemmagen_lexicon", "lemmagen_lexicon_with_ext", "lemmagen_lexicon_path"};
 
-        Tokenizer tokenizer = new UAX29URLEmailTokenizer();
-        tokenizer.setReader(new StringReader(source));
+        for (String filter: filters) {
+            TokenFilterFactory tokenFilter = analysis.tokenFilter.get(filter);
+            assertThat(tokenFilter, instanceOf(LemmagenFilterFactory.class));
 
-        assertTokenStreamContents(tokenFilter.create(tokenizer), expected);
-    }
+            Tokenizer tokenizer = new UAX29URLEmailTokenizer();
+            tokenizer.setReader(new StringReader(source));
 
-    public void testLemmagenFilterFactoryWithShortLexiconCode() throws IOException {
-        ESTestCase.TestAnalysis analysis = createAnalysis();
-
-        TokenFilterFactory tokenFilter = analysis.tokenFilter.get("lemmagen_fr_filter");
-        assertThat(tokenFilter, instanceOf(LemmagenFilterFactory.class));
-
-        String source = "Il faut encore ajouter une pincée de sel.";
-        String[] expected = new String[]{"Il", "falloir", "encore", "ajouter", "un", "pincer", "de", "sel"};
-
-        Tokenizer tokenizer = new UAX29URLEmailTokenizer();
-        tokenizer.setReader(new StringReader(source));
-
-        assertTokenStreamContents(tokenFilter.create(tokenizer), expected);
-    }
-
-    public void testLemmagenFilterFactoryWithPath() throws IOException {
-        ESTestCase.TestAnalysis analysis = createAnalysis();
-
-        TokenFilterFactory tokenFilter = analysis.tokenFilter.get("lemmagen_cs_path_filter");
-        assertThat(tokenFilter, instanceOf(LemmagenFilterFactory.class));
-
-        String source = "Děkuji, že jsi přišel.";
-        String[] expected = {"Děkovat", "že", "být", "přijít"};
-
-        Tokenizer tokenizer = new UAX29URLEmailTokenizer();
-        tokenizer.setReader(new StringReader(source));
-
-        assertTokenStreamContents(tokenFilter.create(tokenizer), expected);
-    }
-
-    public void testAnalyzerWithKeywordRepeatFilter() throws IOException {
-        ESTestCase.TestAnalysis analysis = createAnalysis();
-        NamedAnalyzer analyzerWithKeywordRepeat = analysis.indexAnalyzers.get("lemmagen_with_keyword_repeat");
-
-        assertTokenStreamContents(analyzerWithKeywordRepeat.tokenStream("test", "am"), new String[]{"am", "be"});
-    }
-
-    public void testAnalyzerWithKeywordMarkerFilter() throws IOException {
-        ESTestCase.TestAnalysis analysis = createAnalysis();
-        NamedAnalyzer analyzerWithKeywordMarker = analysis.indexAnalyzers.get("lemmagen_with_keyword_marker");
-
-        assertTokenStreamContents(analyzerWithKeywordMarker.tokenStream("test", "apples"), new String[]{"apples"});
+            assertTokenStreamContents(tokenFilter.create(tokenizer), expected);
+        }
     }
 
     public ESTestCase.TestAnalysis createAnalysis() throws IOException {
-        Settings settings = Settings
-                            .builder()
-                            .loadFromStream("lemmagen.json", getClass().getResourceAsStream("lemmagen.json"))
-                            .build();
+        InputStream lexicon = LemmagenAnalysisTest.class.getResourceAsStream("/org/elasticsearch/index/analysis/cs.lem");
 
-        Settings nodeSettings = Settings
-                                .builder()
-                                .put("path.home", (new File("")).getAbsolutePath())
-                                .put("path.conf", (new File("")).getAbsolutePath())
-                                .build();
+        Path home = createTempDir();
+        Path config = home.resolve("config" + "/" + LemmagenFilterFactory.DEFAULT_DIRECTORY);
+        Files.createDirectories(config);
+        Files.copy(lexicon, config.resolve("cs.lem"));
 
-        Index index = new Index("test", "_na_");
+        String path = "/org/elasticsearch/index/analysis/lemmagen.json";
 
-        ESTestCase.TestAnalysis analysis = createTestAnalysis(index, nodeSettings, settings, new AnalysisLemmagenPlugin());
+        Settings settings = Settings.builder().loadFromStream(path, getClass().getResourceAsStream(path))
+                .put(IndexMetaData.SETTING_VERSION_CREATED, Version.CURRENT)
+                .put(Environment.PATH_HOME_SETTING.getKey(), home)
+                .build();
 
-        return analysis;
+        return AnalysisTestsHelper.createTestAnalysisFromSettings(settings, new AnalysisLemmagenPlugin());
     }
 
 }

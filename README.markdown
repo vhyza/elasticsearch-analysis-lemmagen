@@ -1,73 +1,89 @@
-LemmaGen Analysis for ElasticSearch
-===================================
+# LemmaGen Analysis for ElasticSearch
 
 The LemmaGen Analysis plugin provides [jLemmaGen lemmatizer](https://bitbucket.org/hlavki/jlemmagen) as Elasticsearch [token filter](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/analysis-tokenfilters.html).
 
 [jLemmaGen](https://bitbucket.org/hlavki/jlemmagen) is Java implementation of [LemmaGen](http://lemmatise.ijs.si/) project (originally written in C++ and C#).
 
-[LemmaGen](http://lemmatise.ijs.si/) is open-source lemmatizer which includes lexicons for following European languages.
+## Instalation
 
-* Bulgarian (bg)
-* Czech (cs)
-* English (en)
-* Estonian (et)
-* French (fr)
-* Hungarian (hu)
-* Macedonian (mk)
-* Persian (fa) - since version 2.1
-* Polish (pl)
-* Romanian (ro)
-* Russian (ru)
-* Slovak (sk)
-* Slovene (sl)
-* Serbian (sr)
-* Ukrainian (uk)
+### Plugin
 
-Lexicons license
-================
-According to communication with author of jLemmagen implementation ([https://discuss.elastic.co/t/ann-lemmagen-analysis-for-elasticsearch-plugin/14585/13](https://discuss.elastic.co/t/ann-lemmagen-analysis-for-elasticsearch-plugin/14585/13)) it seems lexicons can be used for non-commercial research purposes only.
-
-
-Instalation
-===========
-
-Installation instructions for particular elasticsearch versions are located at [**releases section**](https://github.com/vhyza/elasticsearch-analysis-lemmagen/releases).
-
-After plugin installation and **elasticsearch restart** you should see in logs:
-
-* elasticsearch `0.90.x`
+Beginning with elasticsearch 5 installation is following:
 
 ```bash
-[2013-11-25 00:33:01,146][INFO ][plugins] [Forrester, Lee] loaded [analysis-lemmagen], sites []
+# specify elasticsearch version
+#
+export VERSION=6.0.0
+./bin/elasticsearch-plugin install https://github.com/vhyza/elasticsearch-analysis-lemmagen/releases/download/v$VERSION/elasticsearch-analysis-lemmagen-$VERSION-plugin.zip
 ```
 
-* elasticsearch `2.x`
+For older elasticsearch version see installation instructions in [**releases section**](https://github.com/vhyza/elasticsearch-analysis-lemmagen/releases).
+
+### Lexicon
+
+**WARNING:** Beginning with elasticsearch 6.0 this plugin **no longer provides** built-in lexicons. There is [separate lemmagen-lexicons repository](https://github.com/vhyza/lemmagen-lexicons) with them.
+
+Copy desired lexicon(s) from [lemmagen-lexicons repository](https://github.com/vhyza/lemmagen-lexicons) into elasticsearch `config/lemmagen` directory (keep the `.lem` extension).
+
+For example to install Czech language support do:
 
 ```bash
-[2015-12-01 19:09:12,809][INFO ][plugins] [Aralune] loaded [elasticsearch-analysis-lemmagen], sites []
+cd elasticsearch
+mkdir config/lemmagen
+cd config/lemmagen
+wget https://github.com/vhyza/lemmagen-lexicons/raw/master/free/lexicons/cs.lem
 ```
 
-* elasticsearch `5.x`
+After plugin installation and **elasticsearch restart** you should see in logs something like:
 
+```bash
+[2018-02-20T17:46:09,038][INFO ][o.e.p.PluginsService] [1rZCAqs] loaded plugin [elasticsearch-analysis-lemmagen]
 ```
-[2017-01-25T09:37:04,901][INFO ][o.e.p.PluginsService     ] [63Jivne] loaded plugin [elasticsearch-analysis-lemmagen]
+
+## Usage
+
+This plugin provides [token filter](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/analysis-tokenfilters.html) of type `lemmagen`.
+
+You need to specify `lexicon` or `lexicon_path` attribute.
+
+* `lexicon`      - name of the file located in `config/lemmagen` (with or without `.lem` extension)
+* `lexicon_path` - relative path to the lexicon file from elasticsearch config directory
+
+For example Czech lexicon can be specified with any of the following configuration:
+
+```json
+{
+    "index": {
+        "analysis": {
+            "filter": {
+                "lemmagen_lexicon" : {
+                    "type": "lemmagen",
+                    "lexicon": "cs"
+                },
+                "lemmagen_lexicon_with_ext" : {
+                    "type": "lemmagen",
+                    "lexicon": "cs.lem"
+                },
+                "lemmagen_lexicon_path" : {
+                    "type": "lemmagen",
+                    "lexicon_path": "lemmagen/cs.lem"
+                }
+            }
+        }
+    }
+}
 ```
 
-Usage
-=====
+## Example
 
-This plugin provides [token filter](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/analysis-tokenfilters.html) of type `lemmagen`. You can specify language by setting `lexicon` option. Valid values are `bg, cs, en, et, fr, hu, mk, pl, ro, ru, sk, sl, sr, uk`. Default is `en`.
-
-Example
--------
 ```bash
 # Delete test index
 #
-curl -X DELETE 'http://localhost:9200/lemmagen-test'
+curl -H "Content-Type: application/json" -X DELETE 'http://localhost:9200/lemmagen-test'
 
 # Create index with lemmagen filter
 #
-curl -X PUT 'http://localhost:9200/lemmagen-test' -d '{
+curl -H "Content-Type: application/json" -X PUT 'http://localhost:9200/lemmagen-test' -d '{
   "settings": {
     "index": {
       "analysis": {
@@ -92,7 +108,7 @@ curl -X PUT 'http://localhost:9200/lemmagen-test' -d '{
   "mappings" : {
     "message" : {
       "properties" : {
-        "text" : { "type" : "string", "analyzer" : "lemmagen_en" }
+        "text" : { "type" : "text", "analyzer" : "lemmagen_en" }
       }
     }
   }
@@ -100,47 +116,50 @@ curl -X PUT 'http://localhost:9200/lemmagen-test' -d '{
 
 # Try it using _analyze api
 #
-curl -X GET 'http://localhost:9200/lemmagen-test/_analyze?analyzer=lemmagen_en&pretty' -d 'I am late.'
+curl -H "Content-Type: application/json" -X GET 'http://localhost:9200/lemmagen-test/_analyze?pretty' -d '{
+  "text": "I am late.",
+  "analyzer": "lemmagen_en"
+}'
 
 # RESPONSE:
 #
 # {
-#   "tokens" : [ {
-#     "token" : "i",
-#     "start_offset" : 0,
-#     "end_offset" : 1,
-#     "type" : "<ALPHANUM>",
-#     "position" : 1
-#   }, {
-#     "token" : "be",
-#     "start_offset" : 2,
-#     "end_offset" : 4,
-#     "type" : "<ALPHANUM>",
-#     "position" : 2
-#   }, {
-#     "token" : "late",
-#     "start_offset" : 5,
-#     "end_offset" : 9,
-#     "type" : "<ALPHANUM>",
-#     "position" : 3
-#   } ]
+#   "tokens" : [
+#     {
+#       "token" : "I",
+#       "start_offset" : 0,
+#       "end_offset" : 1,
+#       "type" : "<ALPHANUM>",
+#       "position" : 0
+#     },
+#     {
+#       "token" : "be",
+#       "start_offset" : 2,
+#       "end_offset" : 4,
+#       "type" : "<ALPHANUM>",
+#       "position" : 1
+#     },
+#     {
+#       "token" : "late",
+#       "start_offset" : 5,
+#       "end_offset" : 9,
+#       "type" : "<ALPHANUM>",
+#       "position" : 2
+#     }
+#   ]
 # }
 
 # Index document
 #
-curl -XPUT 'http://localhost:9200/lemmagen-test/message/1' -d '{
+curl -H "Content-Type: application/json" -XPUT 'http://localhost:9200/lemmagen-test/message/1?refresh=wait_for' -d '{
     "user"         : "tester",
     "published_at" : "2013-11-15T14:12:12",
     "text"         : "I am late."
 }'
 
-# Refresh index
-#
-curl -XPOST 'http://localhost:9200/lemmagen-test/_refresh'
-
 # Search
 #
-curl -X GET 'http://localhost:9200/lemmagen-test/_search?pretty' -d '{
+curl -H "Content-Type: application/json" -X GET 'http://localhost:9200/lemmagen-test/_search?pretty' -d '{
   "query" : {
     "match" : {
       "text" : "is"
@@ -150,37 +169,41 @@ curl -X GET 'http://localhost:9200/lemmagen-test/_search?pretty' -d '{
 
 # RESPONSE
 #
-#{
-#  "took" : 53,
-#  "timed_out" : false,
-#  "_shards" : {
-#    "total" : 5,
-#    "successful" : 5,
-#    "failed" : 0
-#  },
-#  "hits" : {
-#    "total" : 1,
-#    "max_score" : 0.15342641,
-#    "hits" : [ {
-#      "_index" : "lemmagen-test",
-#      "_type" : "message",
-#      "_id" : "1",
-#      "_score" : 0.15342641, "_source" : {
-#        "user"         : "tester",
-#        "published_at" : "2013-11-15T14:12:12",
-#        "text"         : "I am late."
-#    }
-#    } ]
-#  }
-#}
+# {
+#   "took" : 2,
+#   "timed_out" : false,
+#   "_shards" : {
+#     "total" : 5,
+#     "successful" : 5,
+#     "skipped" : 0,
+#     "failed" : 0
+#   },
+#   "hits" : {
+#     "total" : 1,
+#     "max_score" : 0.2876821,
+#     "hits" : [
+#       {
+#         "_index" : "lemmagen-test",
+#         "_type" : "message",
+#         "_id" : "1",
+#         "_score" : 0.2876821,
+#         "_source" : {
+#           "user" : "tester",
+#           "published_at" : "2013-11-15T14:12:12",
+#           "text" : "I am late."
+#         }
+#       }
+#     ]
+#   }
+# }
 ```
 
-**NOTE**: `lemmagen` token filter doesn't lowercase. If you wan't your tokens to be lowercased, add [lowercase token filter](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/analysis-lowercase-tokenfilter.html) into your analyzer `filters`.
+**NOTE**: `lemmagen` token filter doesn't lowercase. If you want your tokens to be lowercased, add [lowercase token filter](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/analysis-lowercase-tokenfilter.html) into your analyzer `filters`.
 
 ```bash
 # Create index with lemmagen and lowercase filter
 #
-curl -X PUT 'http://localhost:9200/lemmagen-lowercase-test' -d '{
+curl -H "Content-Type: application/json" -X PUT 'http://localhost:9200/lemmagen-lowercase-test' -d '{
   "settings": {
     "index": {
       "analysis": {
@@ -203,15 +226,14 @@ curl -X PUT 'http://localhost:9200/lemmagen-lowercase-test' -d '{
   "mappings" : {
     "message" : {
       "properties" : {
-        "text" : { "type" : "string", "analyzer" : "lemmagen_lowercase_en" }
+        "text" : { "type" : "text", "analyzer" : "lemmagen_lowercase_en" }
       }
     }
   }
 }'
 ```
 
-Development
-===========
+## Development
 
 To copy dependencies located in `lib` directory to you local maven repository (`~/.m2`) run:
 
@@ -236,10 +258,9 @@ Credits
 
 License
 =======
-All source codes except prebuilt lexicon files are licensed under Apache License, Version 2.0.
-Prebuilt lexicons can be used for non-commercial research purposes only.
+All source codes are licensed under Apache License, Version 2.0.
 
-    Copyright 2017 Vojtěch Hýža <http://vhyza.eu>
+    Copyright 2018 Vojtěch Hýža <http://vhyza.eu>
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.

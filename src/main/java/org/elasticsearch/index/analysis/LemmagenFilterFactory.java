@@ -21,6 +21,7 @@ import org.elasticsearch.index.IndexSettings;
 public class LemmagenFilterFactory extends AbstractTokenFilterFactory {
 
     private Lemmatizer lemmatizer;
+    static final String DEFAULT_DIRECTORY = "lemmagen";
 
     public LemmagenFilterFactory(IndexSettings indexSettings,
                                  Environment env,
@@ -29,24 +30,31 @@ public class LemmagenFilterFactory extends AbstractTokenFilterFactory {
 
         super(indexSettings, name, settings);
 
-        String lexicon     = settings.get("lexicon", "mlteast-en");
+        String lexicon     = settings.get("lexicon", null);
         String lexiconPath = settings.get("lexicon_path", null);
+        String path;
+
+        if (lexicon == null && lexiconPath == null) {
+            throw new IllegalArgumentException("You need to specify lexicon or lexicon_path option in the token filter configuration");
+        }
+
+        if (lexicon != null && lexiconPath != null) {
+            throw new IllegalArgumentException("Both lexicon and lexicon_path can't be specified");
+        }
+
+        if (lexicon != null) {
+            this.lemmatizer = getLemmatizer(lexicon, env);
+        }
 
         if (lexiconPath != null) {
             this.lemmatizer = getLemmatizer(env.configFile().resolve(lexiconPath).toUri());
-        } else {
-            lexicon         = lexicon.contains("mlteast-") ? lexicon + ".lem" : "mlteast-" + lexicon + ".lem";
-            this.lemmatizer = getLemmatizer(lexicon, getClass().getClassLoader().getResourceAsStream(lexicon));
         }
+
     }
 
-    public Lemmatizer getLemmatizer(String resourceName, InputStream lexiconStream) {
-        try {
-            return LemmatizerFactory.read(lexiconStream);
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Can't initialize lemmatizer from stream " + resourceName, e);
-        }
-    }
+    public Lemmatizer getLemmatizer(String lexicon, Environment env) {
+        return getLemmatizer(env.configFile().resolve(getLexiconDefaultPath(lexicon)).toUri());
+    }    
 
     public Lemmatizer getLemmatizer(URI lexiconPath) {
         try {
@@ -57,16 +65,16 @@ public class LemmagenFilterFactory extends AbstractTokenFilterFactory {
         }
     }
 
-    public Lemmatizer getLemmatizer(String lexicon) {
-        try {
-            return LemmatizerFactory.getPrebuilt(lexicon);
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Can't initialize lemmatizer from resource " + lexicon, e);
-        }
-    }
-
     public TokenStream create(TokenStream tokenStream) {
         return new LemmagenFilter(tokenStream, lemmatizer);
+    }
+
+    private String getLexiconDefaultPath(String lexicon) {
+        if (lexicon.endsWith(".lem")) {
+            return DEFAULT_DIRECTORY + "/" + lexicon;
+        } else {
+            return DEFAULT_DIRECTORY + "/" + lexicon + ".lem";
+        }
     }
 
 }

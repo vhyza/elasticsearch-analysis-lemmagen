@@ -1,53 +1,18 @@
 {
     "index": {
-        "version": {
-            "created": "1040499"
-        },
         "analysis": {
             "filter": {
-                "lemmagen_default_filter": {
-                    "type": "lemmagen"
-                },
-                "lemmagen_cs_filter" : {
+                "lemmagen_lexicon" : {
                     "type": "lemmagen",
-                    "lexicon": "mlteast-cs"
+                    "lexicon": "cs"
                 },
-                "lemmagen_fr_filter" : {
+                "lemmagen_lexicon_with_ext" : {
                     "type": "lemmagen",
-                    "lexicon": "fr"
+                    "lexicon": "cs.lem"
                 },
-                "lemmagen_cs_path_filter" : {
+                "lemmagen_lexicon_path" : {
                     "type": "lemmagen",
-                    "lexicon_path": "../src/test/resources/org/elasticsearch/index/analysis/cs.lem"
-                },
-                "protected_words": {
-                    "type": "keyword_marker",
-                    "keywords": ["apples"]
-                }
-            },
-            "analyzer": {
-                "lemmagen": {
-                    "type": "custom",
-                    "tokenizer": "uax_url_email",
-                    "filter": [
-                        "lemmagen_default_filter"
-                    ]
-                },
-                "lemmagen_with_keyword_repeat": {
-                    "type": "custom",
-                    "tokenizer": "uax_url_email",
-                    "filter": [
-                        "keyword_repeat",
-                        "lemmagen_default_filter"
-                    ]
-                },
-                "lemmagen_with_keyword_marker": {
-                    "type": "custom",
-                    "tokenizer": "uax_url_email",
-                    "filter": [
-                        "protected_words",
-                        "lemmagen_default_filter"
-                    ]
+                    "lexicon_path": "lemmagen/cs.lem"
                 }
             }
         }

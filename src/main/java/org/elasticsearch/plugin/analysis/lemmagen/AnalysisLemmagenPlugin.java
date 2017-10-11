@@ -5,6 +5,7 @@ import org.elasticsearch.plugins.Plugin;
 import org.elasticsearch.plugins.AnalysisPlugin;
 import org.elasticsearch.indices.analysis.AnalysisModule.AnalysisProvider;
 import org.elasticsearch.index.analysis.TokenFilterFactory;
+import static org.elasticsearch.plugins.AnalysisPlugin.requriesAnalysisSettings;
 
 import java.util.Map;
 
@@ -13,6 +14,7 @@ import static java.util.Collections.singletonMap;
 public class AnalysisLemmagenPlugin extends Plugin implements AnalysisPlugin {
     @Override
     public Map<String, AnalysisProvider<TokenFilterFactory>> getTokenFilters() {
-        return singletonMap("lemmagen", LemmagenFilterFactory::new);
+        return singletonMap("lemmagen", requriesAnalysisSettings((indexSettings, env, name, settings) -> new LemmagenFilterFactory
+            (indexSettings, env, name, settings)));
     }
 }

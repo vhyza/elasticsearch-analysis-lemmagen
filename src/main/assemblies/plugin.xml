@@ -20,7 +20,6 @@
             <useTransitiveFiltering>true</useTransitiveFiltering>
             <includes>
                 <include>eu.hlavki.text:jlemmagen</include>
-                <include>eu.hlavki.text:jlemmagen-lang</include>
                 <include>org.slf4j:slf4j-api</include>
                 <include>org.slf4j:slf4j-simple</include>
             </includes>
