@@ -57,7 +57,7 @@ public class LemmagenAnalysisTest extends ESTokenStreamTestCase {
 
         String path = "/org/elasticsearch/index/analysis/lemmagen.json";
 
-        Settings settings = Settings.builder().loadFromStream(path, getClass().getResourceAsStream(path))
+        Settings settings = Settings.builder().loadFromStream(path, getClass().getResourceAsStream(path), false)
                 .put(IndexMetaData.SETTING_VERSION_CREATED, Version.CURRENT)
                 .put(Environment.PATH_HOME_SETTING.getKey(), home)
                 .build();
