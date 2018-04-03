@@ -1,8 +1,8 @@
 # LemmaGen Analysis for ElasticSearch
 
-The LemmaGen Analysis plugin provides [jLemmaGen lemmatizer](https://bitbucket.org/hlavki/jlemmagen) as Elasticsearch [token filter](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/analysis-tokenfilters.html).
+The LemmaGen Analysis plugin provides [jLemmaGen lemmatizer](https://github.com/hlavki/jlemmagen) as Elasticsearch [token filter](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/analysis-tokenfilters.html).
 
-[jLemmaGen](https://bitbucket.org/hlavki/jlemmagen) is Java implementation of [LemmaGen](http://lemmatise.ijs.si/) project (originally written in C++ and C#).
+[jLemmaGen](https://github.com/hlavki/jlemmagen) is Java implementation of [LemmaGen](http://lemmatise.ijs.si/) project (originally written in C++ and C#).
 
 ## Instalation
 
@@ -254,7 +254,7 @@ Credits
 
 [LemmaGen team](http://lemmatise.ijs.si/Home/Contact) for original `C++`, `C#` implementation
 
-[Michal Hlaváč](https://bitbucket.org/hlavki/jlemmagen) for `Java` implementation of LemmaGen
+[Michal Hlaváč](https://github.com/hlavki/jlemmagen) for `Java` implementation of LemmaGen
 
 License
 =======
