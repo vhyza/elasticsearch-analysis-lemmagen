@@ -105,10 +105,11 @@ curl -H "Content-Type: application/json" -X PUT 'http://localhost:9200/lemmagen-
       }
     }
   },
-  "mappings" : {
-    "message" : {
-      "properties" : {
-        "text" : { "type" : "text", "analyzer" : "lemmagen_en" }
+  "mappings": {
+    "properties": {
+      "text": {
+        "type": "text",
+        "analyzer": "lemmagen_en"
       }
     }
   }
@@ -151,7 +152,7 @@ curl -H "Content-Type: application/json" -X GET 'http://localhost:9200/lemmagen-
 
 # Index document
 #
-curl -H "Content-Type: application/json" -XPUT 'http://localhost:9200/lemmagen-test/message/1?refresh=wait_for' -d '{
+curl -H "Content-Type: application/json" -XPUT 'http://localhost:9200/lemmagen-test/_doc/1?refresh=wait_for' -d '{
     "user"         : "tester",
     "published_at" : "2013-11-15T14:12:12",
     "text"         : "I am late."
