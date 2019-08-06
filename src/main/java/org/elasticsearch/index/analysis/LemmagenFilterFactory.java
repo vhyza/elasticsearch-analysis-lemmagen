@@ -1,8 +1,6 @@
 package org.elasticsearch.index.analysis;
 
-import java.io.InputStream;
 import java.net.URI;
-import java.net.URISyntaxException;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,7 +12,6 @@ import org.apache.lucene.analysis.TokenStream;
 
 import org.elasticsearch.env.Environment;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.index.Index;
 import org.elasticsearch.index.IndexSettings;
 
 
@@ -32,7 +29,6 @@ public class LemmagenFilterFactory extends AbstractTokenFilterFactory {
 
         String lexicon     = settings.get("lexicon", null);
         String lexiconPath = settings.get("lexicon_path", null);
-        String path;
 
         if (lexicon == null && lexiconPath == null) {
             throw new IllegalArgumentException("You need to specify lexicon or lexicon_path option in the token filter configuration");
@@ -54,7 +50,7 @@ public class LemmagenFilterFactory extends AbstractTokenFilterFactory {
 
     public Lemmatizer getLemmatizer(String lexicon, Environment env) {
         return getLemmatizer(env.configFile().resolve(getLexiconDefaultPath(lexicon)).toUri());
-    }    
+    }
 
     public Lemmatizer getLemmatizer(URI lexiconPath) {
         try {

@@ -6,7 +6,6 @@ package org.elasticsearch.index.analysis;
 import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.standard.UAX29URLEmailTokenizer;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.index.Index;
 import org.elasticsearch.plugin.analysis.lemmagen.AnalysisLemmagenPlugin;
 import org.elasticsearch.test.ESTestCase;
 import org.elasticsearch.test.ESTokenStreamTestCase;
@@ -14,17 +13,12 @@ import org.elasticsearch.cluster.metadata.IndexMetaData;
 import org.elasticsearch.Version;
 import org.elasticsearch.env.Environment;
 
-import static org.elasticsearch.test.ESTestCase.createTestAnalysis;
-
-import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 
 public class LemmagenAnalysisTest extends ESTokenStreamTestCase {
