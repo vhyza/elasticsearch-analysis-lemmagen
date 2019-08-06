@@ -12,9 +12,9 @@ import java.util.Map;
 import static java.util.Collections.singletonMap;
 
 public class AnalysisLemmagenPlugin extends Plugin implements AnalysisPlugin {
-    @Override
-    public Map<String, AnalysisProvider<TokenFilterFactory>> getTokenFilters() {
-        return singletonMap("lemmagen", requiresAnalysisSettings((indexSettings, env, name, settings) -> new LemmagenFilterFactory
-            (indexSettings, env, name, settings)));
-    }
+  @Override
+  public Map<String, AnalysisProvider<TokenFilterFactory>> getTokenFilters() {
+    return singletonMap("lemmagen", requiresAnalysisSettings(
+        (indexSettings, env, name, settings) -> new LemmagenFilterFactory(indexSettings, env, name, settings)));
+  }
 }
