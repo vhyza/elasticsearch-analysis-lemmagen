@@ -8,13 +8,13 @@
 
     <groupId>org.elasticsearch</groupId>
     <artifactId>elasticsearch-analysis-lemmagen</artifactId>
-    <version>6.8.7</version>
+    <version>6.8.8</version>
 
     <packaging>jar</packaging>
 
     <properties>
         <lucene.version>7.7.2</lucene.version>
-        <elasticsearch.version>6.8.7</elasticsearch.version>
+        <elasticsearch.version>6.8.8</elasticsearch.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
