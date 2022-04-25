@@ -4,7 +4,7 @@
 package org.elasticsearch.index.analysis;
 
 import org.apache.lucene.analysis.Tokenizer;
-import org.apache.lucene.analysis.standard.UAX29URLEmailTokenizer;
+import org.apache.lucene.analysis.email.UAX29URLEmailTokenizer;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.plugin.analysis.lemmagen.AnalysisLemmagenPlugin;
 import org.elasticsearch.test.ESTestCase;
