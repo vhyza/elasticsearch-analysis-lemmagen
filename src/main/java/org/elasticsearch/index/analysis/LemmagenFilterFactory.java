@@ -19,9 +19,9 @@ public class LemmagenFilterFactory extends AbstractTokenFilterFactory {
   private Lemmatizer lemmatizer;
   static final String DEFAULT_DIRECTORY = "lemmagen";
 
-  public LemmagenFilterFactory(IndexSettings indexSettings, Environment env, String name, Settings settings) {
+  public LemmagenFilterFactory(Environment env, String name, Settings settings) {
 
-    super(indexSettings, name, settings);
+    super(name, settings);
 
     String lexicon = settings.get("lexicon", null);
     String lexiconPath = settings.get("lexicon_path", null);
