@@ -10,8 +10,8 @@
   <version>8.9.2</version>
   <packaging>jar</packaging>
   <properties>
-    <plugin.version>8.9.2</plugin.version>
     <elasticsearch.version>8.9.2</elasticsearch.version>
+    <plugin.version>${elasticsearch.version}</plugin.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
   <dependencies>
