@@ -1,0 +1,30 @@
+name: Release
+
+on:
+  push:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        es_version: [ 8.6.1, 8.9.2 ]
+    steps:
+      - name: Checkout project sources
+        uses: actions/checkout@v2
+      - uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Set version
+        run: mvn --no-transfer-progress versions:set -DnewVersion=${{ matrix.es_version }}
+
+      - name: Build
+        run: mvn --no-transfer-progress package -Delasticsearch.version=${{ matrix.es_version }}
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: target/releases/*.zip

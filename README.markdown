@@ -250,6 +250,16 @@ mvn package
 
 After that build should be located in `./target/releases`.
 
+
+## Release
+
+To release for a new Elasticsearch version, add it to the versions in `.github/workflows/build.yml`.
+Then tag the commit and Github Actions should perform the rest.
+
+    git tag v1
+    git push --tags
+
+
 Credits
 =======
 
