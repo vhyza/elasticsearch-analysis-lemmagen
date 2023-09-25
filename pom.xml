@@ -11,7 +11,6 @@
   <packaging>jar</packaging>
   <properties>
     <plugin.version>8.9.2</plugin.version>
-    <lucene.version>9.7.0</lucene.version>
     <elasticsearch.version>8.9.2</elasticsearch.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
@@ -36,12 +35,6 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
       <version>1.6.2</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.lucene</groupId>
-      <artifactId>lucene-test-framework</artifactId>
-      <version>${lucene.version}</version>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.hamcrest</groupId>
