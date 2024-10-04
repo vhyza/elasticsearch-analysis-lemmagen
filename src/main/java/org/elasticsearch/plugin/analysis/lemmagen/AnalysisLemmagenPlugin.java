@@ -15,6 +15,6 @@ public class AnalysisLemmagenPlugin extends Plugin implements AnalysisPlugin {
   @Override
   public Map<String, AnalysisProvider<TokenFilterFactory>> getTokenFilters() {
     return singletonMap("lemmagen", requiresAnalysisSettings(
-        (indexSettings, env, name, settings) -> new LemmagenFilterFactory(env, name, settings)));
+        (indexSettings, env, name, settings) -> new LemmagenFilterFactory(env, name, settings, indexSettings)));
   }
 }
