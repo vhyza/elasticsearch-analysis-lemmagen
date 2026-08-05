@@ -12,7 +12,6 @@ import org.apache.lucene.analysis.TokenStream;
 
 import org.elasticsearch.env.Environment;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.index.IndexSettings;
 
 public class LemmagenFilterFactory extends AbstractTokenFilterFactory {
 
@@ -40,13 +39,13 @@ public class LemmagenFilterFactory extends AbstractTokenFilterFactory {
     }
 
     if (lexiconPath != null) {
-      this.lemmatizer = getLemmatizer(env.configFile().resolve(lexiconPath).toUri());
+      this.lemmatizer = getLemmatizer(env.configDir().resolve(lexiconPath).toUri());
     }
 
   }
 
   public Lemmatizer getLemmatizer(String lexicon, Environment env) {
-    return getLemmatizer(env.configFile().resolve(getLexiconDefaultPath(lexicon)).toUri());
+    return getLemmatizer(env.configDir().resolve(getLexiconDefaultPath(lexicon)).toUri());
   }
 
   public Lemmatizer getLemmatizer(URI lexiconPath) {
